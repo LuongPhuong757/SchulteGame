@@ -13,7 +13,7 @@
 
 Decimal phases appear between their surrounding integers in numeric order.
 
-- [ ] **Phase 1: Khung repo + Chơi 1 mình (local)** - Repo riêng, bảng Schulte chơi được trên điện thoại, tiếng Việt, chưa cần server
+- [x] **Phase 1: Khung repo + Chơi 1 mình (local)** - Repo riêng, bảng Schulte chơi được trên điện thoại, tiếng Việt, chưa cần server (completed 2026-10-28)
 - [ ] **Phase 2: Server + nộp điểm có kiểm + bảng xếp hạng** - Server Node/Socket.IO + SQLite, xác minh điểm solo, Top 10 hôm nay / mọi thời đại
 - [ ] **Phase 3: Phòng + Đua thời gian** - Phòng 2-4 người mã 4 số, đua thời gian cùng bảng / bảng riêng do server làm trọng tài
 - [ ] **Phase 4: Giành số** - Một bảng chung, ai chạm đúng trước giành số, khoá tay khi chạm sai
@@ -138,7 +138,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Khung repo + Chơi 1 mình (local) | 5/5 | In Progress|  |
+| 1. Khung repo + Chơi 1 mình (local) | 5/5 | Complete    | 2026-10-28 |
 | 2. Server + nộp điểm có kiểm + bảng xếp hạng | 0/TBD | Not started | - |
 | 3. Phòng + Đua thời gian | 0/TBD | Not started | - |
 | 4. Giành số | 0/TBD | Not started | - |
