@@ -3,16 +3,16 @@ gsd_state_version: "1.0"
 current_phase: 1
 current_phase_name: Khung repo + Chơi 1 mình (local)
 status: executing
-stopped_at: Completed 01-02-PLAN.md
-last_updated: "2026-10-28T07:27:43.716Z"
+stopped_at: Completed 01-03-PLAN.md
+last_updated: "2026-10-28T07:31:35.925Z"
 last_activity: 2026-10-28
 last_activity_desc: Phase 1 execution started
-state_head: 1880e5234ee982b24ff406bfc4ea9684ed8a2837
+state_head: daa9d02e8c59f9c6b596d1edd842b6454f1898df
 progress:
   total_phases: 6
   completed_phases: 0
   total_plans: 5
-  completed_plans: 2
+  completed_plans: 3
   percent: 0
 ---
 
@@ -28,7 +28,7 @@ See: .planning/PROJECT.md (updated 2026-10-28)
 ## Current Position
 
 Phase: 1 (Khung repo + Chơi 1 mình (local)) — EXECUTING
-Plan: 3 of 5
+Plan: 4 of 5
 Status: Ready to execute
 Last activity: 2026-10-28 — Phase 1 execution started
 
@@ -60,6 +60,7 @@ Progress: [░░░░░░░░░░] 0%
 |------|----------|-------|-------|
 | Phase 01 P01 | 2 min | 3 tasks | 15 files |
 | Phase 1 P02 | 2 min | 2 tasks | 14 files |
+| Phase 01 P03 | 2 min | 3 tasks | 11 files |
 
 ## Accumulated Context
 
@@ -73,6 +74,8 @@ Recent decisions affecting current work:
 - [Phase 01]: Executor commits on branch gsd/phase-1-khung-repo (main protected for executor); user confirmed — Pre-commit assertion forbids protected default branch
 - [Phase 1]: Board golden vectors for 'abc' pinned for sizes 4/5/6; hashSeed/mulberry32/Fisher-Yates is a client-server contract — Phase 2 server replay depends on byte-identical boards
 - [Phase 1]: Penalty arithmetic only in finalTimeMs; reducer tap guards return the same state object — Single source for scoring; safe replay of untrusted tap logs
+- [Phase 1]: Cells have no click handler; pointerdown (preventDefault) plus Enter/Space is the only input path (01-03)
+- [Phase 1]: Wrong-flash duration passed as CSS variable --flash-ms from GAME_DEFAULTS.ui.wrongFlashMs; found cells stay as empty aria-hidden buttons (01-03)
 
 ### Pending Todos
 
@@ -95,6 +98,6 @@ Items acknowledged and deferred at milestone close, most recent first:
 
 ## Session Continuity
 
-Last session: 2026-10-28T07:27:43.698Z
-Stopped at: Completed 01-02-PLAN.md
+Last session: 2026-10-28T07:31:35.896Z
+Stopped at: Completed 01-03-PLAN.md
 Resume file: None

@@ -9,8 +9,8 @@
 ### Bảng & luật chơi (BOARD)
 
 - [x] **BOARD-01**: Người chơi chọn cỡ bảng 4×4 / 5×5 / 6×6; bảng chứa các số 1..N (16/25/36) xếp ngẫu nhiên, mỗi số đúng một lần.
-- [ ] **BOARD-02**: Người chơi chạm lần lượt 1 → N; đồng hồ chạy từ lúc bắt đầu đến khi chạm đúng số N; hiển thị thời gian cuối.
-- [ ] **BOARD-03**: Chạm sai số cộng +2 giây phạt vào thời gian, ô nhá đỏ và điện thoại rung; không tiến số kế tiếp.
+- [x] **BOARD-02**: Người chơi chạm lần lượt 1 → N; đồng hồ chạy từ lúc bắt đầu đến khi chạm đúng số N; hiển thị thời gian cuối.
+- [x] **BOARD-03**: Chạm sai số cộng +2 giây phạt vào thời gian, ô nhá đỏ và điện thoại rung; không tiến số kế tiếp.
 
 ### Giao diện (UI)
 
@@ -89,8 +89,8 @@
 | Requirement | Phase | Status |
 |-------------|-------|--------|
 | BOARD-01 | Phase 1 | Complete |
-| BOARD-02 | Phase 1 | Pending |
-| BOARD-03 | Phase 1 | Pending |
+| BOARD-02 | Phase 1 | Complete |
+| BOARD-03 | Phase 1 | Complete |
 | UI-01 | Phase 1 | Pending |
 | UI-02 | Phase 1 | Pending |
 | ID-01 | Phase 1 | Pending |
