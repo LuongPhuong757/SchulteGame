@@ -42,18 +42,28 @@ export function gameReducer(state: GameState, event: GameEvent): GameState {
     return { ...state, status: 'playing', startedAt: event.t };
   }
 
-  // Tracer slice: only the correct-tap path. Task 2 adds wrong taps and guards.
-  if (state.status === 'playing' && event.value === state.next) {
-    const finished = event.value === state.total;
+  if (state.status !== 'playing') return state;
+  const { value, t } = event;
+  if (!Number.isFinite(t)) return state;
+  const lastT = state.taps.length > 0 ? state.taps[state.taps.length - 1]!.t : state.startedAt;
+  if (lastT !== null && t < lastT) return state;
+  if (!Number.isInteger(value) || value < 1 || value > state.total) return state;
+
+  if (value < state.next) return state; // D-01: found number is inert, no penalty, no log
+
+  const taps = [...state.taps, { value, t }];
+  if (value === state.next) {
+    const finished = value === state.total;
     return {
       ...state,
       status: finished ? 'finished' : 'playing',
       next: state.next + 1,
-      taps: [...state.taps, { value: event.value, t: event.t }],
-      finishedAt: finished ? event.t : null,
+      taps,
+      finishedAt: finished ? t : null,
     };
   }
-  return state;
+  // BOARD-03: wrong tap; penalty arithmetic lives only in finalTimeMs.
+  return { ...state, wrongCount: state.wrongCount + 1, taps };
 }
 
 export function rawTimeMs(state: GameState): number {
