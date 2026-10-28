@@ -35,12 +35,12 @@ Decimal phases appear between their surrounding integers in numeric order.
   4. Biệt danh quá dài / ký tự lạ / từ tục bị từ chối kèm thông báo; biệt danh hợp lệ được điền sẵn khi mở lại app.
   5. Repo riêng khởi tạo được (client + server khung), mọi mặc định chỉnh được (phạt, khoá, mã phòng, hết hạn, vào lại, số người) nằm trong một file cấu hình.
 
-**Plans**: 5 plans
+**Plans**: 1/5 plans executed
 
 Plans:
 **Wave 1**
 
-- [ ] 01-01-PLAN.md — Pin Node 24 + workspace manifests/config + lockfile resolved without install + blocking human lockfile review (OPS-07)
+- [x] 01-01-PLAN.md — Pin Node 24 + workspace manifests/config + lockfile resolved without install + blocking human lockfile review (OPS-07)
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
@@ -138,7 +138,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Khung repo + Chơi 1 mình (local) | 0/TBD | Not started | - |
+| 1. Khung repo + Chơi 1 mình (local) | 1/5 | In Progress|  |
 | 2. Server + nộp điểm có kiểm + bảng xếp hạng | 0/TBD | Not started | - |
 | 3. Phòng + Đua thời gian | 0/TBD | Not started | - |
 | 4. Giành số | 0/TBD | Not started | - |
