@@ -14,17 +14,17 @@
 
 ### Giao diện (UI)
 
-- [ ] **UI-01**: Giao diện ưu tiên điện thoại: ô to, chữ to, thao tác chạm, không phụ thuộc hover/tooltip; dùng được ở màn hình hẹp.
-- [ ] **UI-02**: Toàn bộ giao diện bằng tiếng Việt.
+- [x] **UI-01**: Giao diện ưu tiên điện thoại: ô to, chữ to, thao tác chạm, không phụ thuộc hover/tooltip; dùng được ở màn hình hẹp.
+- [x] **UI-02**: Toàn bộ giao diện bằng tiếng Việt.
 
 ### Danh tính (ID)
 
-- [ ] **ID-01**: Người chơi nhập biệt danh, không cần đăng nhập; biệt danh bị lọc theo độ dài, ký tự cho phép, từ tục cơ bản (quy tắc cụ thể chốt khi plan); cùng một bộ lọc dùng ở client và server.
-- [ ] **ID-02**: Biệt danh được lưu trên máy và điền sẵn ở lần vào sau.
+- [x] **ID-01**: Người chơi nhập biệt danh, không cần đăng nhập; biệt danh bị lọc theo độ dài, ký tự cho phép, từ tục cơ bản (quy tắc cụ thể chốt khi plan); cùng một bộ lọc dùng ở client và server.
+- [x] **ID-02**: Biệt danh được lưu trên máy và điền sẵn ở lần vào sau.
 
 ### Chơi 1 mình & xếp hạng (SOLO)
 
-- [ ] **SOLO-01**: Người chơi nhập biệt danh, chọn cỡ bảng và chơi 1 mình (chạy được local khi chưa có server).
+- [x] **SOLO-01**: Người chơi nhập biệt danh, chọn cỡ bảng và chơi 1 mình (chạy được local khi chưa có server).
 - [ ] **SOLO-02**: Server cấp seed bảng cho mỗi ván solo; client dựng bảng từ seed đó.
 - [ ] **SOLO-03**: Client nộp nhật ký chạm (số + mốc thời gian) kèm seed; server phát lại và chỉ ghi điểm khi hợp lệ (đúng thứ tự, khoảng cách giữa 2 lần chạm không phi lý, seed do server cấp và dùng một lần); điểm sai bị từ chối.
 - [ ] **SOLO-04**: Bảng xếp hạng Top 10 theo từng cỡ bảng cho **hôm nay**.
@@ -67,8 +67,8 @@
 - [ ] **OPS-04**: Game sập hoặc quá tải không làm POS quán sập theo (cô lập tài nguyên, kiểm chứng bằng cách dừng/làm nghẽn container).
 - [ ] **OPS-05**: Chỉ thêm 1 khối `game.quanbalun.site` vào Caddy (reverse proxy hỗ trợ WebSocket) + 1 bản ghi DNS; không sửa gì khác của hạ tầng quán.
 - [ ] **OPS-06**: Có công tắc tắt game nhanh (biến môi trường hoặc dừng container) không cần deploy lại, và POS quán không bị ảnh hưởng khi bật/tắt.
-- [ ] **OPS-07**: Repo riêng, không nằm trong monorepo OrderQuanBaLun.
-- [ ] **OPS-08**: Các mặc định chỉnh được (phạt 2s, khoá 2s, mã 4 số, phòng hết hạn 10 phút, vào lại 15s, tối đa 4 người) nằm trong một file cấu hình, không rải trong code.
+- [x] **OPS-07**: Repo riêng, không nằm trong monorepo OrderQuanBaLun.
+- [x] **OPS-08**: Các mặc định chỉnh được (phạt 2s, khoá 2s, mã 4 số, phòng hết hạn 10 phút, vào lại 15s, tối đa 4 người) nằm trong một file cấu hình, không rải trong code.
 
 ## v2 Requirements
 
@@ -91,13 +91,13 @@
 | BOARD-01 | Phase 1 | Complete |
 | BOARD-02 | Phase 1 | Complete |
 | BOARD-03 | Phase 1 | Complete |
-| UI-01 | Phase 1 | Pending |
-| UI-02 | Phase 1 | Pending |
-| ID-01 | Phase 1 | Pending |
-| ID-02 | Phase 1 | Pending |
-| SOLO-01 | Phase 1 | Pending |
-| OPS-07 | Phase 1 | Pending |
-| OPS-08 | Phase 1 | Pending |
+| UI-01 | Phase 1 | Complete |
+| UI-02 | Phase 1 | Complete |
+| ID-01 | Phase 1 | Complete |
+| ID-02 | Phase 1 | Complete |
+| SOLO-01 | Phase 1 | Complete |
+| OPS-07 | Phase 1 | Complete |
+| OPS-08 | Phase 1 | Complete |
 | SOLO-02 | Phase 2 | Pending |
 | SOLO-03 | Phase 2 | Pending |
 | SOLO-04 | Phase 2 | Pending |
