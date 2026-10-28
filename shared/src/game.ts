@@ -95,3 +95,65 @@ export function replay(
   for (const tap of taps) state = gameReducer(state, { type: 'tap', value: tap.value, t: tap.t });
   return state;
 }
+
+/** Largest timestamp (ms) a strict replay accepts: far above any real page lifetime. */
+export const MAX_REPLAY_T_MS = 1e12;
+/** Default cap on a single run's raw duration for strict replay (1 hour). */
+export const DEFAULT_MAX_REPLAY_DURATION_MS = 60 * 60 * 1000;
+
+export interface ReplayStrictOptions {
+  /** Minimum gap between consecutive events (start included). Default 0. */
+  readonly minTapIntervalMs?: number;
+  /** Maximum raw duration (finishedAt - startedAt). Default 1 hour. */
+  readonly maxDurationMs?: number;
+}
+
+export type ReplayStrictResult =
+  | { readonly ok: true; readonly state: GameState }
+  | { readonly ok: false; readonly reason: string };
+
+/**
+ * Strict replay for untrusted logs (Phase 2 server verification). Unlike the
+ * lenient reducer it REJECTS rather than ignores: out-of-range or decreasing
+ * timestamps, non-integer / out-of-range / already-found values, taps after the
+ * game finished, an incomplete log, gaps below `minTapIntervalMs` and runs
+ * longer than `maxDurationMs`. Wrong taps (value > next) are legitimate input.
+ */
+export function replayStrict(
+  seed: string,
+  size: BoardSize,
+  startT: number,
+  taps: readonly TapEvent[],
+  options: ReplayStrictOptions = {},
+): ReplayStrictResult {
+  const minInterval = options.minTapIntervalMs ?? 0;
+  const maxDuration = options.maxDurationMs ?? DEFAULT_MAX_REPLAY_DURATION_MS;
+  const inRange = (t: unknown): t is number =>
+    typeof t === 'number' && Number.isFinite(t) && t >= 0 && t <= MAX_REPLAY_T_MS;
+
+  if (!inRange(startT)) return { ok: false, reason: 'invalid_start_time' };
+  let state = gameReducer(createGame(seed, size), { type: 'start', t: startT });
+  if (state.status !== 'playing') return { ok: false, reason: 'start_rejected' };
+
+  let lastT = startT;
+  for (const [i, tap] of taps.entries()) {
+    if (state.status === 'finished') return { ok: false, reason: `tap_after_finish:${i}` };
+    if (typeof tap !== 'object' || tap === null) return { ok: false, reason: `invalid_tap:${i}` };
+    const { value, t } = tap;
+    if (!inRange(t)) return { ok: false, reason: `invalid_time:${i}` };
+    if (t < lastT) return { ok: false, reason: `time_decreasing:${i}` };
+    if (t - lastT < minInterval) return { ok: false, reason: `tap_too_fast:${i}` };
+    if (!Number.isInteger(value) || value < 1 || value > state.total) {
+      return { ok: false, reason: `invalid_value:${i}` };
+    }
+    if (value < state.next) return { ok: false, reason: `already_found:${i}` };
+    const next = gameReducer(state, { type: 'tap', value, t });
+    if (next === state) return { ok: false, reason: `tap_rejected:${i}` };
+    state = next;
+    lastT = t;
+  }
+
+  if (state.status !== 'finished') return { ok: false, reason: 'not_finished' };
+  if (rawTimeMs(state) > maxDuration) return { ok: false, reason: 'duration_exceeded' };
+  return { ok: true, state };
+}

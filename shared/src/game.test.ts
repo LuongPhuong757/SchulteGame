@@ -7,6 +7,7 @@ import {
   gameReducer,
   rawTimeMs,
   replay,
+  replayStrict,
   type GameEvent,
   type GameState,
 } from './game';
@@ -153,5 +154,43 @@ describe('replay (CR-01)', () => {
     const replayed = replay('abc', 4, 1000, live.taps);
     expect(replayed.wrongCount).toBe(1);
     expect(finalTimeMs(replayed)).toBe(finalTimeMs(live));
+  });
+});
+
+describe('replayStrict (WR-01)', () => {
+  const clean = () => tapAll(started(), 1, 16, 1100).taps;
+
+  it('accepts a clean log, including legitimate wrong taps, and matches the lenient replay', () => {
+    const taps = [{ value: 9, t: 1050 }, ...clean()];
+    const r = replayStrict('abc', 4, 1000, taps);
+    expect(r.ok).toBe(true);
+    if (r.ok) expect(finalTimeMs(r.state)).toBe(finalTimeMs(replay('abc', 4, 1000, taps)));
+  });
+  it('rejects what the lenient reducer would silently ignore', () => {
+    const taps = clean();
+    const bad = (list: readonly { value: number; t: number }[]) => replayStrict('abc', 4, 1000, list);
+    expect(bad([{ value: 1, t: 1100 }, { value: 1, t: 1200 }, ...taps.slice(1)]).ok).toBe(false); // already found
+    expect(bad([{ value: 1.5, t: 1100 }, ...taps]).ok).toBe(false);
+    expect(bad([{ value: 99, t: 1100 }, ...taps]).ok).toBe(false);
+    expect(bad([{ value: 1, t: NaN }, ...taps.slice(1)]).ok).toBe(false);
+    expect(bad([{ value: 1, t: 1100 }, { value: 2, t: 1050 }, ...taps.slice(2)]).ok).toBe(false);
+    expect(bad([...taps, { value: 1, t: 9999 }]).ok).toBe(false); // tap after finish
+  });
+  it('rejects an incomplete log', () => {
+    expect(replayStrict('abc', 4, 1000, clean().slice(0, 5))).toEqual({ ok: false, reason: 'not_finished' });
+  });
+  it('rejects out-of-range timestamps (no Infinity overflow)', () => {
+    expect(replayStrict('abc', 4, -1e308, clean()).ok).toBe(false);
+    expect(replayStrict('abc', 4, 1000, [{ value: 1, t: 1e308 }]).ok).toBe(false);
+    expect(replayStrict('abc', 4, -1, clean()).ok).toBe(false);
+  });
+  it('enforces a caller-supplied minimum tap interval and maximum duration', () => {
+    const fast = Array.from({ length: 16 }, (_, i) => ({ value: i + 1, t: 1000 }));
+    expect(replayStrict('abc', 4, 1000, fast).ok).toBe(true); // default permits 0 ms gaps
+    expect(replayStrict('abc', 4, 1000, fast, { minTapIntervalMs: 50 }).ok).toBe(false);
+    expect(replayStrict('abc', 4, 1000, clean(), { maxDurationMs: 500 })).toEqual({
+      ok: false,
+      reason: 'duration_exceeded',
+    });
   });
 });
