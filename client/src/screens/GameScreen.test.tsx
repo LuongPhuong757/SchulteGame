@@ -1,6 +1,6 @@
 import { act, cleanup, fireEvent, render, screen } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi as vitest } from 'vitest';
-import { GAME_DEFAULTS } from '@schulte/shared';
+import { GAME_DEFAULTS, formatTime } from '@schulte/shared';
 import { vibrate } from '../lib/haptics';
 import { vi } from '../i18n/vi';
 import { GameScreen } from './GameScreen';
@@ -87,6 +87,56 @@ describe('GameScreen finish (D-02, D-05)', () => {
     expect(result?.seed).toBe('abc');
     expect(result?.size).toBe(4);
     expect(result?.taps).toHaveLength(17);
+  });
+});
+
+describe('GameScreen next hint and live timer (BOARD-02)', () => {
+  it('shows the next number hint and advances it after a correct tap', () => {
+    mockClock(1000);
+    render(<GameScreen seed="abc" size={4} onFinish={() => undefined} />);
+    expect(screen.getByText(vi.game.next(1))).toBeTruthy();
+    tap(1);
+    expect(screen.getByText(vi.game.next(2))).toBeTruthy();
+  });
+
+  it('live timer already includes the +2 s penalty per wrong tap', () => {
+    vitest.useFakeTimers();
+    const clock = mockClock(1000);
+    render(<GameScreen seed="abc" size={4} onFinish={() => undefined} />);
+
+    clock.now = 1100;
+    tap(7); // one wrong tap
+    clock.now = 2500; // 1500 ms since mount
+    act(() => {
+      vitest.advanceTimersByTime(GAME_DEFAULTS.ui.timerTickMs);
+    });
+    expect(screen.getByRole('timer').textContent).toBe(
+      formatTime(1500 + GAME_DEFAULTS.wrongTapPenaltyMs),
+    );
+  });
+
+  it('timer stops after the final tap and equals the result final time', () => {
+    vitest.useFakeTimers();
+    const onFinish = vitest.fn<(r: GameResult) => void>();
+    const clock = mockClock(1000);
+    render(<GameScreen seed="abc" size={4} onFinish={onFinish} />);
+
+    clock.now = 1100;
+    tap(7); // wrong
+    for (let n = 1; n <= 16; n++) {
+      clock.now = n === 16 ? 6000 : 1200 + n;
+      tap(n);
+    }
+    const finalMs = onFinish.mock.calls[0]?.[0].finalMs ?? -1;
+    const shown = screen.getByRole('timer').textContent;
+    expect(shown).toBe(formatTime(finalMs));
+
+    clock.now = 99000;
+    act(() => {
+      vitest.advanceTimersByTime(GAME_DEFAULTS.ui.timerTickMs * 5);
+    });
+    expect(screen.getByRole('timer').textContent).toBe(shown);
+    expect(screen.queryByText(vi.game.next(16))).toBeNull();
   });
 });
 
