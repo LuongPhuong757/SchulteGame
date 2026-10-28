@@ -116,11 +116,26 @@ h1 {
   border: none;
 }
 
-.cell--wrong {
-  animation: wrong-flash var(--flash-ms) ease-out 1;
+/* Two identical keyframes: alternating the name restarts the animation on
+   repeated wrong taps without remounting (and unfocusing) the cell. */
+.cell--wrong-0 {
+  animation: wrong-flash-0 var(--flash-ms) ease-out 1;
 }
 
-@keyframes wrong-flash {
+.cell--wrong-1 {
+  animation: wrong-flash-1 var(--flash-ms) ease-out 1;
+}
+
+@keyframes wrong-flash-0 {
+  from {
+    background: var(--wrong);
+  }
+  to {
+    background: var(--cell-bg);
+  }
+}
+
+@keyframes wrong-flash-1 {
   from {
     background: var(--wrong);
   }

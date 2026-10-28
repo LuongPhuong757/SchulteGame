@@ -101,6 +101,55 @@ describe('Board', () => {
     expect(fireEvent.contextMenu(board)).toBe(false); // false = default prevented
   });
 
+  it('ignores key auto-repeat (WR-05)', () => {
+    const { onTap } = renderBoard();
+    const cell = screen.getByRole('button', { name: '9' });
+    fireEvent.keyDown(cell, { key: 'Enter' });
+    fireEvent.keyDown(cell, { key: 'Enter', repeat: true });
+    fireEvent.keyDown(cell, { key: ' ', repeat: true });
+    expect(onTap).toHaveBeenCalledTimes(1);
+  });
+
+  it('keeps the same focused node when a wrong-tap flash starts, repeats and ends (WR-05)', () => {
+    const board = generateBoard('abc', 4);
+    const onTap = vitest.fn();
+    const props = { board, size: 4 as const, next: 1, onTap };
+    const { rerender } = render(<Board {...props} flash={null} />);
+    const cell = screen.getByRole('button', { name: '9' });
+    cell.focus();
+    expect(document.activeElement).toBe(cell);
+
+    rerender(<Board {...props} flash={{ value: 9, key: 1 }} />);
+    expect(screen.getByRole('button', { name: '9' })).toBe(cell);
+    expect(cell.className).toContain('cell--wrong-1');
+    expect(document.activeElement).toBe(cell);
+
+    rerender(<Board {...props} flash={{ value: 9, key: 2 }} />);
+    expect(cell.className).toContain('cell--wrong-0'); // new animation name restarts the flash
+    expect(document.activeElement).toBe(cell);
+
+    rerender(<Board {...props} flash={null} />);
+    expect(screen.getByRole('button', { name: '9' })).toBe(cell);
+    expect(cell.className).toBe('cell');
+    expect(document.activeElement).toBe(cell);
+  });
+
+  it('after a correct keyboard tap, focus moves to another playable cell, not <body> (WR-05)', () => {
+    const board = generateBoard('abc', 4);
+    const { rerender, onTap } = renderBoard();
+    const cell = screen.getByRole('button', { name: '1' });
+    cell.focus();
+    fireEvent.keyDown(cell, { key: 'Enter' });
+    expect(onTap).toHaveBeenCalledWith(1);
+    const focused = document.activeElement as HTMLElement;
+    expect(focused).not.toBe(cell);
+    expect(focused.classList.contains('cell')).toBe(true);
+    // The parent then advances `next`; the focused node survives that re-render.
+    rerender(<Board board={board} size={4} next={2} flash={null} onTap={onTap} />);
+    expect(document.activeElement).toBe(focused);
+    expect((document.activeElement as HTMLButtonElement).disabled).toBe(false);
+  });
+
   it('cells carry no click handler: click does not call onTap (single input path)', () => {
     const { onTap } = renderBoard();
     fireEvent.click(screen.getByRole('button', { name: '7' }));
