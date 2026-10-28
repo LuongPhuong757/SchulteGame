@@ -53,6 +53,25 @@ Filled in by the planner per task. Requirement → test map from RESEARCH.md:
 | OPS-07 | Repo root is its own git repo | smoke | `test "$(git rev-parse --show-toplevel)" = "$PWD"` | n/a | ⬜ pending |
 | OPS-08 | Six SPEC defaults in `GAME_DEFAULTS`; no stray literals | unit + grep | `npx vitest run --project shared config` | ❌ W0 | ⬜ pending |
 
+Per-task map (planner, 2026-10-28). Prefix every command with `fnm exec --using=24.20.0 --`, run from repo root. Note: ID-02 storage tests live in `client/src/lib/storage.test.ts` (filter `storage`), UI-02 guard in `client/src/i18n/vi.test.tsx` (filter `vi`), OPS-07/OPS-08 permanent guards in `server/src/repo-guards.test.ts` (project `server`).
+
+| Task | Requirements | Automated Command | Test file(s) created |
+|------|--------------|-------------------|----------------------|
+| 01-01 T1 | OPS-07 | lockfile pin/link check (`node -e` in plan) + `.node-version` + no node_modules | n/a |
+| 01-01 T2 | OPS-07 | tsconfig JSON / index.html structural check (`node -e` + grep) | n/a |
+| 01-01 T3 | — (supply chain) | checkpoint, blocking-human | n/a |
+| 01-02 T1 (tracer) | SOLO-01 | `npm test -- --project client App && npm run typecheck && npm run build` | client/src/App.test.tsx |
+| 01-02 T2 | BOARD-01/02/03, OPS-08 | `npm test -- --project shared` + purity / stray-default greps | shared/src/{config,board,game}.test.ts |
+| 01-03 T1 | UI-01 | `npm test -- --project client Board App` + no-hover / no-click greps | client/src/components/Board.test.tsx |
+| 01-03 T2 | BOARD-03 | `npm test -- --project client GameScreen App Board` | client/src/screens/GameScreen.test.tsx |
+| 01-03 T3 | BOARD-02, UI-02 | `npm test -- --project shared time` + `--project client GameScreen App` + build | shared/src/time.test.ts |
+| 01-04 T1 | ID-01 | `npm test -- --project shared nickname` | shared/src/nickname.test.ts |
+| 01-04 T2 | ID-02 | `npm test -- --project client storage` | client/src/lib/storage.test.ts |
+| 01-04 T3 | ID-01 (D-04) | checkpoint, blocking-human (blocklist review) | n/a |
+| 01-05 T1 | ID-01, ID-02, SOLO-01 | `npm test -- --project client MenuScreen App` | client/src/screens/MenuScreen.test.tsx |
+| 01-05 T2 | SOLO-01, BOARD-02 (+ phone human-check UI-01/BOARD-03/ID-02) | `npm test -- --project client App MenuScreen GameScreen` + build | client/src/App.test.tsx (rewritten) |
+| 01-05 T3 | OPS-07, OPS-08, UI-02 | `npm test && npm run typecheck && npm run build` + server start | server/src/repo-guards.test.ts, client/src/i18n/vi.test.tsx |
+
 *Status: ⬜ pending · ✅ green · ❌ red · ⚠️ flaky*
 
 ---
