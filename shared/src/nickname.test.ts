@@ -29,6 +29,9 @@ const MUST_ACCEPT = [
   'an_88',
   'mr.bean',
   'Tuấn-1990',
+  'Edit Me', // WR-02: contains `ditme` only across a word boundary
+  'Bacon Cacao', // WR-02: contains `concac` only across a word boundary
+  'Falcon Cactus', // WR-02
 ];
 
 const LEET: Record<string, string> = { o: '0', i: '1', e: '3', a: '4' };
@@ -205,9 +208,12 @@ describe('blocklist hygiene', () => {
   });
 
   it('no substring entry occurs inside a must-accept fixture', () => {
+    // Per token: multi-word fixtures like "Edit Me" legitimately contain an entry
+    // across a word boundary (WR-02); the matcher ignores those.
     for (const name of MUST_ACCEPT) {
-      const compact = foldNickname(name).replace(/[^a-z]/g, '');
-      for (const e of BLOCKED_FOLDED_SUBSTRINGS) expect(compact).not.toContain(e);
+      for (const token of foldNickname(name).split(/[^a-z]+/)) {
+        for (const e of BLOCKED_FOLDED_SUBSTRINGS) expect(token).not.toContain(e);
+      }
     }
   });
 
@@ -216,6 +222,21 @@ describe('blocklist hygiene', () => {
       expect(new Set(list).size).toBe(list.length);
     }
   });
+});
+
+describe('substring matching respects word boundaries (WR-02)', () => {
+  it.each(['Edit Me', 'Bacon Cacao', 'Falcon Cactus', 'edit.me', 'bacon_cacao'])(
+    'accepts %s',
+    (name) => {
+      expect(validateNickname(name).ok).toBe(true);
+    },
+  );
+  it.each(['dit me', 'Con Cac', 'd i t m e', 'xx dit me', 'Dit_Me', 'f u c k e r'])(
+    'still blocks whole-word and spaced-out insults: %s',
+    (name) => {
+      expect(validateNickname(name)).toEqual({ ok: false, reason: 'blocked' });
+    },
+  );
 });
 
 describe('foldNickname / isBlockedNickname', () => {

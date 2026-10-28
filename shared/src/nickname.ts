@@ -42,9 +42,35 @@ export function isBlockedNickname(normalized: string): boolean {
   const folded = foldNickname(normalized).replace(/[0134]/g, (d) => LEET_MAP[d] ?? d);
   if (folded.split(/[^a-z0-9]+/).some((t) => foldedTokens.has(t))) return true;
 
-  // (c) long compacted insults anywhere in the separator-stripped string
-  const compact = folded.replace(/[^a-z]+/g, '');
-  return BLOCKED_FOLDED_SUBSTRINGS.some((w) => compact.includes(w));
+  // (c) long compacted insults: inside one token, or spanning several tokens
+  // only when the match starts AND ends on token boundaries (so "d.i.t.m.e" and
+  // "dit me" are caught, but "Edit Me" / "Bacon Cacao" are not: their match
+  // straddles a boundary mid-token).
+  return containsBlockedSubstring(folded.split(/[^a-z0-9]+/));
+}
+
+function containsBlockedSubstring(rawTokens: readonly string[]): boolean {
+  // Unmapped digits are dropped inside a token (e.g. "di2tme"), as before.
+  const tokens = rawTokens.map((t) => t.replace(/[^a-z]/g, '')).filter((t) => t.length > 0);
+  let compact = '';
+  const tokenOf: number[] = [];
+  const starts = new Set<number>();
+  const ends = new Set<number>();
+  tokens.forEach((token, index) => {
+    starts.add(compact.length);
+    for (let i = 0; i < token.length; i++) tokenOf.push(index);
+    compact += token;
+    ends.add(compact.length);
+  });
+
+  return BLOCKED_FOLDED_SUBSTRINGS.some((word) => {
+    for (let at = compact.indexOf(word); at !== -1; at = compact.indexOf(word, at + 1)) {
+      const end = at + word.length;
+      if (tokenOf[at] === tokenOf[end - 1]) return true;
+      if (starts.has(at) && ends.has(end)) return true;
+    }
+    return false;
+  });
 }
 
 export function validateNickname(raw: unknown): NicknameResult {
