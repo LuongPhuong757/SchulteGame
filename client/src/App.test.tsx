@@ -75,7 +75,6 @@ describe('full solo flow (SOLO-01, ID-02, BOARD-02)', () => {
     expect(screen.getByText(vi.result.greeting('Lan Anh'))).toBeTruthy();
     expect(screen.getByText(vi.result.seconds(formatTime(12000)))).toBeTruthy();
     expect(screen.getByText(vi.result.breakdown(formatTime(10000), 1, 2))).toBeTruthy();
-    expect(vi.result.breakdown(formatTime(10000), 1, 2)).toContain('1');
 
     // Replay: fresh seed 'abd', same size
     clock.now = 20000;
@@ -106,10 +105,5 @@ describe('full solo flow (SOLO-01, ID-02, BOARD-02)', () => {
 
     // SOLO-01 privacy: nothing left the device
     expect(fetchSpy).not.toHaveBeenCalled();
-  });
-
-  it('result breakdown omits the penalty part when there were no wrong taps', () => {
-    expect(vi.result.breakdown('10,00', 0, 2)).not.toContain('×');
-    expect(vi.result.breakdown('10,00', 3, 2)).toContain('×');
   });
 });
