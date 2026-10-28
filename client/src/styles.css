@@ -134,3 +134,61 @@ h1 {
   text-align: center;
   color: #fca5a5;
 }
+
+.menu {
+  max-width: 420px;
+  margin: 0 auto;
+}
+
+.menu form {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.nickname-input {
+  width: 100%;
+  min-height: 48px;
+  padding: 8px 12px;
+  border: 2px solid var(--cell-active);
+  border-radius: 12px;
+  background: var(--cell-bg);
+  color: var(--cell-fg);
+  font: inherit;
+  font-size: 18px;
+}
+
+.size-label {
+  margin-top: 8px;
+}
+
+.size-group {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+}
+
+.size-option {
+  min-height: 48px;
+  padding: 8px;
+  border: 2px solid var(--cell-active);
+  border-radius: 12px;
+  background: transparent;
+  color: var(--fg);
+  font: inherit;
+  font-weight: 700;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.size-option[aria-pressed='true'] {
+  border-color: var(--accent);
+  background: var(--accent);
+  color: var(--accent-fg);
+}
+
+.error {
+  margin: 0;
+  color: #fca5a5;
+  font-weight: 700;
+}

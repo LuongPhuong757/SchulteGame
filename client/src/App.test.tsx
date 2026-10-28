@@ -1,4 +1,4 @@
-import { fireEvent, render, screen } from '@testing-library/react';
+import { cleanup, fireEvent, render, screen } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi as vitest } from 'vitest';
 import { App } from './App';
 import { vi } from './i18n/vi';
@@ -6,6 +6,8 @@ import { vi } from './i18n/vi';
 vitest.mock('./lib/seed', () => ({ newSeed: () => 'abc' }));
 
 afterEach(() => {
+  cleanup();
+  localStorage.clear();
   vitest.restoreAllMocks();
 });
 
@@ -15,6 +17,7 @@ describe('App tracer flow', () => {
     vitest.spyOn(performance, 'now').mockImplementation(() => (clock += 100));
 
     render(<App />);
+    fireEvent.change(screen.getByLabelText(vi.menu.nicknameLabel), { target: { value: 'Lan Anh' } });
     fireEvent.click(screen.getByRole('button', { name: vi.start }));
 
     const buttons = screen.getAllByRole('button');
