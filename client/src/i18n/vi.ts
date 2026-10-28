@@ -6,4 +6,8 @@ export const vi = {
     title: 'Hoàn thành!',
     seconds: (t: string): string => `${t} giây`,
   },
+  game: {
+    wrongTaps: (count: number, penaltySeconds: number): string =>
+      `Chạm sai: ${count} (+${count * penaltySeconds} giây)`,
+  },
 };
