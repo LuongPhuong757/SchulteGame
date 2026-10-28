@@ -6,6 +6,9 @@ import { vi } from './i18n/vi';
 import { newSeed } from './lib/seed';
 import { NICKNAME_STORAGE_KEY } from './lib/storage';
 
+// A real primary mouse/touch press (jsdom's default PointerEvent has isPrimary=false).
+const PRIMARY_POINTER = { button: 0, isPrimary: true } as const;
+
 vitest.mock('./lib/seed', () => ({ newSeed: vitest.fn() }));
 
 const fetchSpy = vitest.fn();
@@ -38,7 +41,7 @@ function submitMenu(): void {
 }
 
 function tap(value: number): void {
-  fireEvent.pointerDown(screen.getByRole('button', { name: String(value) }));
+  fireEvent.pointerDown(screen.getByRole('button', { name: String(value) }), PRIMARY_POINTER);
 }
 
 function boardOrder(): string[] {

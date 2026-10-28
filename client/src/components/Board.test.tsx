@@ -4,6 +4,9 @@ import { generateBoard } from '@schulte/shared';
 import type { BoardSize } from '@schulte/shared';
 import { Board } from './Board';
 
+// A real primary mouse/touch press (jsdom's default PointerEvent has isPrimary=false).
+const PRIMARY_POINTER = { button: 0, isPrimary: true } as const;
+
 afterEach(() => {
   cleanup();
   vitest.restoreAllMocks();
@@ -46,7 +49,7 @@ describe('Board', () => {
 
   it('pointerDown on an unfound cell calls onTap once with its value', () => {
     const { onTap } = renderBoard();
-    fireEvent.pointerDown(screen.getByRole('button', { name: '7' }));
+    fireEvent.pointerDown(screen.getByRole('button', { name: '7' }), PRIMARY_POINTER);
     expect(onTap).toHaveBeenCalledTimes(1);
     expect(onTap).toHaveBeenCalledWith(7);
   });
@@ -54,7 +57,7 @@ describe('Board', () => {
   it('pointerDown on a found cell does not call onTap (D-01)', () => {
     const { onTap, container } = renderBoard({ next: 4 });
     const found = container.querySelectorAll('.cell--found');
-    found.forEach((cell) => fireEvent.pointerDown(cell));
+    found.forEach((cell) => fireEvent.pointerDown(cell, PRIMARY_POINTER));
     expect(onTap).not.toHaveBeenCalled();
   });
 
@@ -77,8 +80,25 @@ describe('Board', () => {
 
   it('disabled board ignores pointerDown on every cell', () => {
     const { onTap, container } = renderBoard({ disabled: true });
-    container.querySelectorAll('.cell').forEach((cell) => fireEvent.pointerDown(cell));
+    container.querySelectorAll('.cell').forEach((cell) => fireEvent.pointerDown(cell, PRIMARY_POINTER));
     expect(onTap).not.toHaveBeenCalled();
+  });
+
+  it('ignores right-click, middle-click and non-primary pointers (WR-04)', () => {
+    const { onTap } = renderBoard();
+    const cell = screen.getByRole('button', { name: '7' });
+    fireEvent.pointerDown(cell, { button: 2 });
+    fireEvent.pointerDown(cell, { button: 1 });
+    fireEvent.pointerDown(cell, { button: 0, isPrimary: false });
+    expect(onTap).not.toHaveBeenCalled();
+    fireEvent.pointerDown(cell, { button: 0, isPrimary: true });
+    expect(onTap).toHaveBeenCalledTimes(1);
+  });
+
+  it('suppresses the context menu over the board (WR-04)', () => {
+    const { container } = renderBoard();
+    const board = container.querySelector('.board') as HTMLElement;
+    expect(fireEvent.contextMenu(board)).toBe(false); // false = default prevented
   });
 
   it('cells carry no click handler: click does not call onTap (single input path)', () => {

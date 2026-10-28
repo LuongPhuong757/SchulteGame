@@ -18,7 +18,7 @@ export function Board({ board, size, next, flash, disabled = false, onTap }: Boa
   } as CSSProperties;
 
   return (
-    <div className="board" style={style}>
+    <div className="board" style={style} onContextMenu={(event) => event.preventDefault()}>
       {board.map((value) => {
         // D-01: a found number is an empty, inert cell.
         if (value < next) {
@@ -43,6 +43,9 @@ export function Board({ board, size, next, flash, disabled = false, onTap }: Boa
         // so one physical tap produces exactly one game event (T-03-01).
         const handlePointerDown = (event: PointerEvent<HTMLButtonElement>) => {
           event.preventDefault();
+          // Primary button / primary pointer only: a right or middle click must not
+          // score. Tolerant of environments that omit the fields (undefined passes).
+          if (event.button > 0 || event.isPrimary === false) return;
           if (disabled || value < next) return;
           onTap(value);
         };

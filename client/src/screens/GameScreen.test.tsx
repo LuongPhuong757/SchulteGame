@@ -6,6 +6,9 @@ import { vi } from '../i18n/vi';
 import { GameScreen } from './GameScreen';
 import type { GameResult } from './GameScreen';
 
+// A real primary mouse/touch press (jsdom's default PointerEvent has isPrimary=false).
+const PRIMARY_POINTER = { button: 0, isPrimary: true } as const;
+
 function setVibrate(value: unknown): void {
   Object.defineProperty(navigator, 'vibrate', { value, configurable: true });
 }
@@ -25,7 +28,7 @@ function mockClock(initial: number) {
 }
 
 function tap(value: number): void {
-  fireEvent.pointerDown(screen.getByRole('button', { name: String(value) }));
+  fireEvent.pointerDown(screen.getByRole('button', { name: String(value) }), PRIMARY_POINTER);
 }
 
 describe('GameScreen wrong-tap feedback (BOARD-03)', () => {
