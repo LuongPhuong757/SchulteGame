@@ -8,6 +8,7 @@ export default defineConfig({
         extends: './client/vite.config.ts',
         test: { name: 'client', root: './client', environment: 'jsdom' },
       },
+      { test: { name: 'server', root: './server', environment: 'node' } },
     ],
   },
 });
