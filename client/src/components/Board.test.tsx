@@ -1,10 +1,11 @@
-import { fireEvent, render, screen } from '@testing-library/react';
+import { cleanup, fireEvent, render, screen } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi as vitest } from 'vitest';
 import { generateBoard } from '@schulte/shared';
 import type { BoardSize } from '@schulte/shared';
 import { Board } from './Board';
 
 afterEach(() => {
+  cleanup();
   vitest.restoreAllMocks();
 });
 

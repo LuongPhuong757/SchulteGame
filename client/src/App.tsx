@@ -1,5 +1,6 @@
 import { useEffect, useReducer, useState } from 'react';
 import { createGame, finalTimeMs, formatTime, gameReducer } from '@schulte/shared';
+import { Board } from './components/Board';
 import { vi } from './i18n/vi';
 import { newSeed } from './lib/seed';
 
@@ -15,17 +16,14 @@ function Game({ seed }: { seed: string }) {
   return (
     <main>
       <h1>{vi.appTitle}</h1>
-      <div className="board" style={{ display: 'grid', gridTemplateColumns: `repeat(${state.size}, 1fr)` }}>
-        {state.board.map((value) => (
-          <button
-            key={value}
-            type="button"
-            onPointerDown={() => dispatch({ type: 'tap', value, t: performance.now() })}
-          >
-            {value}
-          </button>
-        ))}
-      </div>
+      <Board
+        board={state.board}
+        size={state.size}
+        next={state.next}
+        flash={null}
+        disabled={state.status !== 'playing'}
+        onTap={(value) => dispatch({ type: 'tap', value, t: performance.now() })}
+      />
       {state.status === 'finished' && (
         <p>
           <strong>{vi.result.title}</strong> {vi.result.seconds(formatTime(finalTimeMs(state)))}
