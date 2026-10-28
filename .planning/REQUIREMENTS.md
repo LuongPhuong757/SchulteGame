@@ -8,7 +8,7 @@
 
 ### Bảng & luật chơi (BOARD)
 
-- [ ] **BOARD-01**: Người chơi chọn cỡ bảng 4×4 / 5×5 / 6×6; bảng chứa các số 1..N (16/25/36) xếp ngẫu nhiên, mỗi số đúng một lần.
+- [x] **BOARD-01**: Người chơi chọn cỡ bảng 4×4 / 5×5 / 6×6; bảng chứa các số 1..N (16/25/36) xếp ngẫu nhiên, mỗi số đúng một lần.
 - [ ] **BOARD-02**: Người chơi chạm lần lượt 1 → N; đồng hồ chạy từ lúc bắt đầu đến khi chạm đúng số N; hiển thị thời gian cuối.
 - [ ] **BOARD-03**: Chạm sai số cộng +2 giây phạt vào thời gian, ô nhá đỏ và điện thoại rung; không tiến số kế tiếp.
 
@@ -88,7 +88,7 @@
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| BOARD-01 | Phase 1 | Pending |
+| BOARD-01 | Phase 1 | Complete |
 | BOARD-02 | Phase 1 | Pending |
 | BOARD-03 | Phase 1 | Pending |
 | UI-01 | Phase 1 | Pending |
@@ -127,6 +127,7 @@
 | OPS-06 | Phase 6 | Pending |
 
 **Coverage:**
+
 - v1 requirements: 37 total
 - Mapped to phases: 37
 - Unmapped: 0
