@@ -1,0 +1,13 @@
+{
+  "source_path": "/Users/m1macbook/Desktop/SchulteGame/SPEC.md",
+  "type": "SPEC",
+  "confidence": "high",
+  "manifest_override": true,
+  "title": "SPEC — Game Bảng Schulte",
+  "summary": "Technical and gameplay spec for a standalone Schulte table game: solo mode, room-based race and number-grab modes, server-arbitrated anti-cheat, SQLite leaderboard, and container deployment limits.",
+  "scope": ["Schulte table game", "solo mode", "time race mode", "number grab mode", "rooms", "leaderboard", "anti-cheat", "Node + Socket.IO server", "React + Vite client", "SQLite", "Docker container", "Caddy reverse proxy", "VPS", "DNS record"],
+  "cross_refs": [],
+  "locked": false,
+  "precedence": null,
+  "notes": ""
+}
