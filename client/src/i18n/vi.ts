@@ -26,6 +26,12 @@ export const vi = {
   result: {
     title: 'Hoàn thành!',
     seconds: (t: string): string => `${t} giây`,
+    greeting: (nickname: string): string => `Giỏi lắm, ${nickname}!`,
+    breakdown: (rawText: string, wrongCount: number, penaltySeconds: number): string =>
+      `Thời gian chạm ${rawText} giây` +
+      (wrongCount > 0 ? ` + ${wrongCount} lần chạm sai × ${penaltySeconds} giây` : ''),
+    replay: 'Chơi lại',
+    changeSize: 'Đổi cỡ bảng',
   },
   game: {
     next: (n: number): string => `Tiếp theo: ${n}`,

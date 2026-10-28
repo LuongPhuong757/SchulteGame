@@ -1,12 +1,12 @@
 import { useState } from 'react';
-import { GAME_DEFAULTS, formatTime } from '@schulte/shared';
+import { GAME_DEFAULTS } from '@schulte/shared';
 import type { BoardSize } from '@schulte/shared';
-import { vi } from './i18n/vi';
 import { newSeed } from './lib/seed';
 import { loadNickname, saveNickname } from './lib/storage';
 import { GameScreen } from './screens/GameScreen';
 import type { GameResult } from './screens/GameScreen';
 import { MenuScreen } from './screens/MenuScreen';
+import { ResultScreen } from './screens/ResultScreen';
 
 type Screen =
   | { name: 'menu' }
@@ -45,13 +45,12 @@ export function App() {
     );
   }
 
-  const { result } = screen;
   return (
-    <main>
-      <h1>{vi.appTitle}</h1>
-      <p>
-        <strong>{vi.result.title}</strong> {vi.result.seconds(formatTime(result.finalMs))}
-      </p>
-    </main>
+    <ResultScreen
+      result={screen.result}
+      nickname={nickname}
+      onReplay={() => setScreen({ name: 'playing', seed: newSeed(), size: screen.result.size })}
+      onChangeSize={() => setScreen({ name: 'menu' })}
+    />
   );
 }
