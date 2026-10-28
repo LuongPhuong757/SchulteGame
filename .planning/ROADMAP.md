@@ -35,7 +35,7 @@ Decimal phases appear between their surrounding integers in numeric order.
   4. Biệt danh quá dài / ký tự lạ / từ tục bị từ chối kèm thông báo; biệt danh hợp lệ được điền sẵn khi mở lại app.
   5. Repo riêng khởi tạo được (client + server khung), mọi mặc định chỉnh được (phạt, khoá, mã phòng, hết hạn, vào lại, số người) nằm trong một file cấu hình.
 
-**Plans**: 3/5 plans executed
+**Plans**: 4/5 plans executed
 
 Plans:
 **Wave 1**
@@ -49,7 +49,7 @@ Plans:
 **Wave 3** *(blocked on Wave 2 completion)*
 
 - [x] 01-03-PLAN.md — Mobile game screen: touch board with emptied found cells, red flash + vibrate, live timer + "Tiếp theo" (UI-01, UI-02, BOARD-02, BOARD-03)
-- [ ] 01-04-PLAN.md — Shared nickname filter (D-03) + blocklist (D-04) + on-device storage + blocking blocklist review (ID-01, ID-02)
+- [x] 01-04-PLAN.md — Shared nickname filter (D-03) + blocklist (D-04) + on-device storage + blocking blocklist review (ID-01, ID-02)
 
 **Wave 4** *(blocked on Wave 3 completion)*
 
@@ -138,7 +138,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5 → 6
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Khung repo + Chơi 1 mình (local) | 3/5 | In Progress|  |
+| 1. Khung repo + Chơi 1 mình (local) | 4/5 | In Progress|  |
 | 2. Server + nộp điểm có kiểm + bảng xếp hạng | 0/TBD | Not started | - |
 | 3. Phòng + Đua thời gian | 0/TBD | Not started | - |
 | 4. Giành số | 0/TBD | Not started | - |

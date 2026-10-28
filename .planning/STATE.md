@@ -3,16 +3,16 @@ gsd_state_version: "1.0"
 current_phase: 1
 current_phase_name: Khung repo + Chơi 1 mình (local)
 status: executing
-stopped_at: Completed 01-03-PLAN.md
-last_updated: "2026-10-28T07:31:35.925Z"
+stopped_at: Completed 01-04-PLAN.md
+last_updated: "2026-10-28T07:42:41.833Z"
 last_activity: 2026-10-28
 last_activity_desc: Phase 1 execution started
-state_head: daa9d02e8c59f9c6b596d1edd842b6454f1898df
+state_head: 6d66186464dee5664fb1a5504950f0df54778d7a
 progress:
   total_phases: 6
   completed_phases: 0
   total_plans: 5
-  completed_plans: 3
+  completed_plans: 4
   percent: 0
 ---
 
@@ -28,7 +28,7 @@ See: .planning/PROJECT.md (updated 2026-10-28)
 ## Current Position
 
 Phase: 1 (Khung repo + Chơi 1 mình (local)) — EXECUTING
-Plan: 4 of 5
+Plan: 5 of 5
 Status: Ready to execute
 Last activity: 2026-10-28 — Phase 1 execution started
 
@@ -61,6 +61,7 @@ Progress: [░░░░░░░░░░] 0%
 | Phase 01 P01 | 2 min | 3 tasks | 15 files |
 | Phase 1 P02 | 2 min | 2 tasks | 14 files |
 | Phase 01 P03 | 2 min | 3 tasks | 11 files |
+| Phase 1 P04 | 8 min | 3 tasks | 6 files |
 
 ## Accumulated Context
 
@@ -76,6 +77,7 @@ Recent decisions affecting current work:
 - [Phase 1]: Penalty arithmetic only in finalTimeMs; reducer tap guards return the same state object — Single source for scoring; safe replay of untrusted tap logs
 - [Phase 1]: Cells have no click handler; pointerdown (preventDefault) plus Enter/Space is the only input path (01-03)
 - [Phase 1]: Wrong-flash duration passed as CSS variable --flash-ms from GAME_DEFAULTS.ui.wrongFlashMs; found cells stay as empty aria-hidden buttons (01-03)
+- [Phase 1]: 01-04: blocklist in three tiers (accented tokens, folded tokens + leet, folded substrings); dm kept, user-approved at D-04 — Conservative: false negatives preferred over blocking real Vietnamese names
 
 ### Pending Todos
 
@@ -98,6 +100,6 @@ Items acknowledged and deferred at milestone close, most recent first:
 
 ## Session Continuity
 
-Last session: 2026-10-28T07:31:35.896Z
-Stopped at: Completed 01-03-PLAN.md
+Last session: 2026-10-28T07:42:41.817Z
+Stopped at: Completed 01-04-PLAN.md
 Resume file: None
