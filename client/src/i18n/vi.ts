@@ -7,6 +7,8 @@ export const vi = {
     seconds: (t: string): string => `${t} giây`,
   },
   game: {
+    next: (n: number): string => `Tiếp theo: ${n}`,
+    timeLabel: 'Thời gian',
     wrongTaps: (count: number, penaltySeconds: number): string =>
       `Chạm sai: ${count} (+${count * penaltySeconds} giây)`,
   },

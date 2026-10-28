@@ -8,6 +8,7 @@ import {
 } from '@schulte/shared';
 import type { BoardSize, TapEvent } from '@schulte/shared';
 import { Board } from '../components/Board';
+import { Timer } from '../components/Timer';
 import { vi } from '../i18n/vi';
 import { vibrate } from '../lib/haptics';
 
@@ -71,6 +72,14 @@ export function GameScreen(props: {
   return (
     <main>
       <h1>{vi.appTitle}</h1>
+      <div className="game-header">
+        {state.status !== 'finished' && <span>{vi.game.next(state.next)}</span>}
+        <Timer
+          startedAt={state.startedAt}
+          finishedAt={state.finishedAt}
+          penaltyMs={state.wrongCount * GAME_DEFAULTS.wrongTapPenaltyMs}
+        />
+      </div>
       <Board
         board={state.board}
         size={state.size}
