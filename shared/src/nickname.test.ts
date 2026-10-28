@@ -239,6 +239,35 @@ describe('substring matching respects word boundaries (WR-02)', () => {
   );
 });
 
+describe('blocklist bypasses (WR-03)', () => {
+  it.each([
+    ['Cyrillic homoglyphs', 'fuсk'], // с is U+0441
+    ['fullwidth', 'ｆｕｃｋ'],
+    ['mathematical bold', '𝐟𝐮𝐜𝐤'],
+    ['repetition', 'fuuuck'],
+    ['repetition of 2', 'fuuck'],
+    ['repeated double letter entry', 'bulllshit'],
+    ['single-char separation', 'f u c k'],
+    ['accented token repetition', 'địttt'],
+    ['Cyrillic in a substring entry', 'dіtme'], // і is U+0456
+  ])('blocks %s', (_label, name) => {
+    expect(validateNickname(name)).toEqual({ ok: false, reason: 'blocked' });
+  });
+
+  it('stores the NFC value, not the NFKC one (D-03)', () => {
+    expect(validateNickname('Ｌan')).toEqual({ ok: true, value: 'Ｌan' });
+  });
+
+  it('does not read two initials as a word', () => {
+    expect(validateNickname('A B').ok).toBe(true);
+    expect(validateNickname('Lan A B Anh').ok).toBe(true);
+  });
+
+  it.each(['Ánh Cúc', 'Hoàng', 'Mary Poppins', 'Dũng', 'Anna'])('still accepts %s', (name) => {
+    expect(validateNickname(name).ok).toBe(true);
+  });
+});
+
 describe('foldNickname / isBlockedNickname', () => {
   it('folds diacritics, đ/Đ and case', () => {
     expect(foldNickname('Đụ Mẹ ĐỒ')).toBe('du me do');

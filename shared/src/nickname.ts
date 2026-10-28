@@ -19,8 +19,25 @@ const ALLOWED = /^[\p{L}\p{N} _.\-]+$/u;
 
 const LEET_MAP: Readonly<Record<string, string>> = { '0': 'o', '1': 'i', '3': 'e', '4': 'a' };
 
+// Lookalike letters folded to Latin for blocklist matching only (WR-03). The
+// validator still ACCEPTS these characters (D-03 allows any letter); they just
+// cannot be used to dodge the blocklist. Cyrillic and Greek lowercase.
+const CONFUSABLES: Readonly<Record<string, string>> = {
+  'а': 'a', 'е': 'e', 'о': 'o', 'с': 'c', 'р': 'p', 'х': 'x', 'у': 'y', 'і': 'i',
+  'ѕ': 's', 'ј': 'j', 'һ': 'h', 'ԁ': 'd',
+  'α': 'a', 'ε': 'e', 'ο': 'o', 'ι': 'i', 'ν': 'v', 'ρ': 'p',
+};
+
+/** Collapse every run of a repeated character to one ("fuuuck" -> "fuck"). */
+const squeeze = (s: string): string => s.replace(/(.)\1+/gu, '$1');
+
+// Each list is matched twice: as written, and squeezed on both sides, so
+// repetition ("fuuck", "bulllshit") cannot dodge an entry.
 const accentedTokens = new Set(BLOCKED_ACCENTED_TOKENS);
+const accentedTokensSqueezed = new Set(BLOCKED_ACCENTED_TOKENS.map(squeeze));
 const foldedTokens = new Set(BLOCKED_FOLDED_TOKENS);
+const foldedTokensSqueezed = new Set(BLOCKED_FOLDED_TOKENS.map(squeeze));
+const substringsSqueezed = BLOCKED_FOLDED_SUBSTRINGS.map(squeeze);
 
 /** NFD, strip combining marks, đ/Đ -> d/D (NFD does not decompose them), lowercase. */
 export function foldNickname(s: string): string {
@@ -34,22 +51,53 @@ export function foldNickname(s: string): string {
 
 /** `normalized` is the NFC, whitespace-collapsed nickname. */
 export function isBlockedNickname(normalized: string): boolean {
-  // (a) accented whole-token match, diacritics kept
-  const accented = normalized.normalize('NFC').toLowerCase().split(/[^\p{L}\p{N}]+/u);
-  if (accented.some((t) => accentedTokens.has(t))) return true;
+  // NFKC maps fullwidth and mathematical-alphabet letters to plain ones. Used
+  // for matching only; the stored nickname stays NFC (D-03).
+  const n = normalized.normalize('NFKC');
 
-  // (b) folded whole-token match after digit substitution
-  const folded = foldNickname(normalized).replace(/[0134]/g, (d) => LEET_MAP[d] ?? d);
-  if (folded.split(/[^a-z0-9]+/).some((t) => foldedTokens.has(t))) return true;
+  // (a) accented whole-token match, diacritics kept
+  const accented = n.toLowerCase().split(/[^\p{L}\p{N}]+/u);
+  if (accented.some((t) => accentedTokens.has(t) || accentedTokensSqueezed.has(squeeze(t)))) {
+    return true;
+  }
+
+  // (b) folded whole-token match after confusable and digit substitution
+  const folded = foldNickname(n)
+    .replace(/[^\x00-\x7f]/g, (c) => CONFUSABLES[c] ?? c)
+    .replace(/[0134]/g, (d) => LEET_MAP[d] ?? d);
+  const tokens = folded.split(/[^a-z0-9]+/);
+  // Runs of 3+ single-character tokens are also read as one word ("f u c k").
+  const candidates = [...tokens, ...singleCharRuns(tokens)];
+  if (candidates.some((t) => foldedTokens.has(t) || foldedTokensSqueezed.has(squeeze(t)))) {
+    return true;
+  }
 
   // (c) long compacted insults: inside one token, or spanning several tokens
   // only when the match starts AND ends on token boundaries (so "d.i.t.m.e" and
   // "dit me" are caught, but "Edit Me" / "Bacon Cacao" are not: their match
   // straddles a boundary mid-token).
-  return containsBlockedSubstring(folded.split(/[^a-z0-9]+/));
+  return (
+    containsBlockedSubstring(tokens, BLOCKED_FOLDED_SUBSTRINGS) ||
+    containsBlockedSubstring(tokens.map(squeeze), substringsSqueezed)
+  );
 }
 
-function containsBlockedSubstring(rawTokens: readonly string[]): boolean {
+function singleCharRuns(tokens: readonly string[]): string[] {
+  const runs: string[] = [];
+  let run: string[] = [];
+  const flush = (): void => {
+    if (run.length >= 3) runs.push(run.join(''));
+    run = [];
+  };
+  for (const t of tokens) {
+    if (t.length === 1) run.push(t);
+    else flush();
+  }
+  flush();
+  return runs;
+}
+
+function containsBlockedSubstring(rawTokens: readonly string[], words: readonly string[]): boolean {
   // Unmapped digits are dropped inside a token (e.g. "di2tme"), as before.
   const tokens = rawTokens.map((t) => t.replace(/[^a-z]/g, '')).filter((t) => t.length > 0);
   let compact = '';
@@ -63,7 +111,7 @@ function containsBlockedSubstring(rawTokens: readonly string[]): boolean {
     ends.add(compact.length);
   });
 
-  return BLOCKED_FOLDED_SUBSTRINGS.some((word) => {
+  return words.some((word) => {
     for (let at = compact.indexOf(word); at !== -1; at = compact.indexOf(word, at + 1)) {
       const end = at + word.length;
       if (tokenOf[at] === tokenOf[end - 1]) return true;
