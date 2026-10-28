@@ -1,7 +1,15 @@
 import { describe, expect, it } from 'vitest';
 import { generateBoard } from './board';
 import { GAME_DEFAULTS } from './config';
-import { createGame, finalTimeMs, gameReducer, rawTimeMs, type GameEvent, type GameState } from './game';
+import {
+  createGame,
+  finalTimeMs,
+  gameReducer,
+  rawTimeMs,
+  replay,
+  type GameEvent,
+  type GameState,
+} from './game';
 
 function run(state: GameState, events: GameEvent[]): GameState {
   return events.reduce(gameReducer, state);
@@ -126,5 +134,24 @@ describe('guards (T-02-04)', () => {
     const s = deepFreeze(started());
     expect(() => gameReducer(s, { type: 'tap', value: 5, t: 1050 })).not.toThrow();
     expect(() => gameReducer(s, { type: 'tap', value: 1, t: 1100 })).not.toThrow();
+  });
+});
+
+describe('replay (CR-01)', () => {
+  it('reproduces the live reducer result from (seed, size, startT, taps)', () => {
+    const live = tapAll(started(), 1, 16, 1100);
+    const replayed = replay('abc', 4, 1000, live.taps);
+    expect(replayed.status).toBe('finished');
+    expect(rawTimeMs(replayed)).toBe(rawTimeMs(live));
+    expect(finalTimeMs(replayed)).toBe(finalTimeMs(live));
+    expect(replayed.taps).toEqual(live.taps);
+  });
+  it('counts wrong taps the same way as the live game', () => {
+    let live = started();
+    live = gameReducer(live, { type: 'tap', value: 9, t: 1050 });
+    live = tapAll(live, 1, 16, 1100);
+    const replayed = replay('abc', 4, 1000, live.taps);
+    expect(replayed.wrongCount).toBe(1);
+    expect(finalTimeMs(replayed)).toBe(finalTimeMs(live));
   });
 });

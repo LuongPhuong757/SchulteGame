@@ -79,3 +79,19 @@ export function finalTimeMs(
 ): number {
   return rawTimeMs(state) + state.wrongCount * penaltyMs;
 }
+
+/**
+ * Lenient replay of a recorded run: start at `startT`, then apply `taps` in order
+ * through the same reducer the UI uses. Invalid events are ignored (see
+ * `replayStrict` for the untrusted-input variant).
+ */
+export function replay(
+  seed: string,
+  size: BoardSize,
+  startT: number,
+  taps: readonly TapEvent[],
+): GameState {
+  let state = gameReducer(createGame(seed, size), { type: 'start', t: startT });
+  for (const tap of taps) state = gameReducer(state, { type: 'tap', value: tap.value, t: tap.t });
+  return state;
+}

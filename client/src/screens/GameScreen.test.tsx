@@ -1,6 +1,6 @@
 import { act, cleanup, fireEvent, render, screen } from '@testing-library/react';
 import { afterEach, describe, expect, it, vi as vitest } from 'vitest';
-import { GAME_DEFAULTS, formatTime } from '@schulte/shared';
+import { GAME_DEFAULTS, finalTimeMs, formatTime, replay } from '@schulte/shared';
 import { vibrate } from '../lib/haptics';
 import { vi } from '../i18n/vi';
 import { GameScreen } from './GameScreen';
@@ -87,6 +87,26 @@ describe('GameScreen finish (D-02, D-05)', () => {
     expect(result?.seed).toBe('abc');
     expect(result?.size).toBe(4);
     expect(result?.taps).toHaveLength(17);
+    expect(result?.startedAt).toBe(1000);
+  });
+
+  it('result is self-contained: replaying (seed, size, startedAt, taps) reproduces the final time', () => {
+    const onFinish = vitest.fn<(r: GameResult) => void>();
+    const clock = mockClock(1000);
+    render(<GameScreen seed="abc" size={4} onFinish={onFinish} />);
+
+    clock.now = 1100;
+    tap(7); // wrong
+    for (let n = 1; n <= 16; n++) {
+      clock.now = n === 16 ? 6000 : 1200 + n;
+      tap(n);
+    }
+
+    const result = onFinish.mock.calls[0]?.[0];
+    if (result === undefined) throw new Error('onFinish not called');
+    const replayed = replay(result.seed, result.size, result.startedAt, result.taps);
+    expect(replayed.status).toBe('finished');
+    expect(finalTimeMs(replayed)).toBe(result.finalMs);
   });
 });
 

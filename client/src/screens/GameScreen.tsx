@@ -15,6 +15,8 @@ import { vibrate } from '../lib/haptics';
 export interface GameResult {
   seed: string;
   size: BoardSize;
+  /** state.startedAt: absolute performance.now() of the `start` event; `taps[].t` share this origin. */
+  startedAt: number;
   rawMs: number;
   wrongCount: number;
   /** wrongCount * GAME_DEFAULTS.wrongTapPenaltyMs */
@@ -60,6 +62,7 @@ export function GameScreen(props: {
     onFinish({
       seed,
       size,
+      startedAt: state.startedAt ?? 0,
       rawMs: rawTimeMs(state),
       wrongCount: state.wrongCount,
       penaltyMs: state.wrongCount * GAME_DEFAULTS.wrongTapPenaltyMs,

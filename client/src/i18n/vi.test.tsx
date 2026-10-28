@@ -30,6 +30,7 @@ describe('source scan (UI-02)', () => {
 const sampleResult: GameResult = {
   seed: 'abc',
   size: 4,
+  startedAt: 1000,
   rawMs: 12340,
   wrongCount: 1,
   penaltyMs: 2000,
